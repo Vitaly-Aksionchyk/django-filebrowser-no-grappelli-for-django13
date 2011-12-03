@@ -14,6 +14,7 @@ from django.utils.encoding import smart_str
 
 # filebrowser imports
 from filebrowser.settings import *
+from django.core.exceptions import ImproperlyConfigured
 
 # PIL import
 if STRICT_PIL:
@@ -149,6 +150,13 @@ def get_path(path):
     """
     Get Path.
     """
+    if not os.path.exists(MEDIA_ROOT):
+        raise ImproperlyConfigured('MEDIA_PATH doesn\'t exist')
+     
+    root = os.path.join(MEDIA_ROOT, DIRECTORY)
+    if not os.path.exists(root):
+        os.mkdir(root)
+    
     
     if path.startswith('.') or os.path.isabs(path) or not os.path.isdir(os.path.join(MEDIA_ROOT, DIRECTORY, path)):
         return None
